@@ -1,0 +1,8 @@
+node_modules/
+Visualization/Website/node_modules/
+Visualization/Website/package-lock.json
+Visualization/Website/dist/
+.next/
+.env*
+.DS_Store
+npm-debug.log*

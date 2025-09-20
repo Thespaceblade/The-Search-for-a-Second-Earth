@@ -1,34 +1,23 @@
-# Second Earth Website
+# Second Earth Explorer (Next.js)
 
-A lightweight TypeScript starter to present analyses from the "Search for a Second Earth" dataset. The project compiles TypeScript to a distributable `dist/` folder and ships static assets ready for hosting.
+Next.js + TypeScript app (App Router) that reads `public/data/rawdata.csv`, exposes it at `/api/data`, and renders an interactive Plotly scatter with filters.
 
-## Project layout
+## Scripts
 
-- `src/` — TypeScript sources; start by editing `src/main.ts`
-- `public/` — Static assets (HTML, CSS, images, data files) copied directly into `dist/`
-- `scripts/` — Small Node utilities invoked by the npm scripts
-- `dist/` — Generated output (ignored until you run a build)
+- `npm run dev` — start dev server (http://localhost:3000)
+- `npm run build` — production build
+- `npm run start` — run the production server
+- `npm run typecheck` — TypeScript check
 
-## Getting started
+You can run these from the repository root (workspaces) or from `Visualization/Website`.
 
-1. Install dependencies once network access is available:
-   ```bash
-   npm install
-   ```
-2. Build the TypeScript and copy static assets:
-   ```bash
-   npm run build
-   ```
-3. Open `dist/index.html` in a browser or serve the folder with your favourite static server.
+## Data
 
-For iterative work, `npm run watch` will recompile TypeScript on file changes. Pair it with a static file server for live reload (e.g. `npx http-server dist`).
+Place your CSV at `public/data/rawdata.csv`. The API expects columns including at least:
 
-## Next steps
+- `pl_name` — planet name
+- `pl_orbsmax` — semi-major axis (AU)
+- `pl_insol` — stellar flux (Earth=1)
 
-- Replace the placeholder dataset in `src/main.ts` with the processed mission dataset. For local files, drop the JSON or CSV under `public/data/` so it is copied into `dist/`.
-- Build visualizations (D3, Observable Plot, Deck.gl, etc.) where `renderApp` currently assembles the layout.
-- Expand the npm scripts with your preferred bundler (Vite, Astro, Next.js) if you need component-based tooling or server-side rendering.
+Several alias column names are recognized in the API for convenience.
 
-## License
-
-MIT — feel free to adapt for the hackathon team.

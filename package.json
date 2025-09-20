@@ -1,0 +1,13 @@
+{
+  "name": "second-earth-monorepo",
+  "private": true,
+  "workspaces": [
+    "Visualization/Website"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspace second-earth-website",
+    "build": "npm run build --workspace second-earth-website",
+    "preview": "npm run start --workspace second-earth-website",
+    "typecheck": "npm run typecheck --workspace second-earth-website"
+  }
+}

@@ -1,23 +1,41 @@
 {
   "name": "second-earth-website",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
-  "type": "module",
-  "description": "Dataset analysis website for the Search for a Second Earth project.",
+  "description": "Next.js + TypeScript app for Second Earth dataset analysis.",
   "scripts": {
-    "clean": "node ./scripts/clean.mjs",
-    "build": "npm run clean && tsc && node ./scripts/copy-static.mjs",
-    "watch": "tsc --watch",
-    "test": "echo \"No automated tests defined yet\""
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "typecheck": "tsc --noEmit"
   },
   "keywords": [
+    "nextjs",
     "typescript",
+    "plotly",
     "data-visualization",
     "second-earth"
   ],
   "author": "",
   "license": "MIT",
+  "dependencies": {
+    "@tailwindcss/postcss": "^4.1.13",
+    "autoprefixer": "^10.4.21",
+    "clsx": "^2.1.1",
+    "csv-parse": "^5.5.6",
+    "next": "^14.2.11",
+    "plotly.js-dist-min": "^2.35.3",
+    "postcss": "^8.5.6",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-plotly.js": "^2.6.0",
+    "tailwindcss": "^4.1.13",
+    "framer-motion": "^11.2.10"
+  },
   "devDependencies": {
+    "@types/node": "^20.12.12",
+    "@types/react": "^18.3.4",
+    "@types/react-dom": "^18.3.0",
     "typescript": "^5.4.0"
   }
 }
