@@ -39,8 +39,27 @@ export default function PlanetRadarExplorer({ items, initialSelected }: Props) {
   const minScore = items.length ? items[0].score : 0;
   const scoreRange = Math.max(1e-9, maxScore - minScore); // avoid div-by-zero
   const ringCount = 6;
-  const rMin = 60; // px from center
-  const rMax = 180; // px from center
+
+  // Dynamically size rings to fit container; aim for 1.5x the previous size
+  const containerRef = React.useRef<HTMLDivElement>(null);
+  const [dims, setDims] = React.useState<{ w: number; h: number }>({ w: 0, h: 0 });
+  React.useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    const ro = new ResizeObserver((entries) => {
+      for (const e of entries) {
+        const cr = e.contentRect;
+        setDims({ w: cr.width, h: cr.height });
+      }
+    });
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+
+  const baseRMax = 270; // 1.5x 180
+  const avail = Math.max(0, Math.min(dims.w || 0, dims.h || 0) / 2 - 20); // keep margin
+  const rMax = Math.max(120, Math.min(baseRMax, avail || baseRMax));
+  const rMin = rMax / 3; // keep the same proportion as before
   const ringGap = ringCount > 1 ? (rMax - rMin) / (ringCount - 1) : 0;
 
   type RingItem = { name: string; angle: number; r: number; color: string };
@@ -62,9 +81,9 @@ export default function PlanetRadarExplorer({ items, initialSelected }: Props) {
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
+    <div className="flex flex-row gap-6 items-start">
       {/* Radial menu */}
-      <div className="relative mx-auto h-[420px] w-[420px] rounded-full bg-[#111827] ring-1 ring-white/10 overflow-hidden">
+      <div ref={containerRef} className="relative flex-1 h-[630px] rounded-none bg-[#111827] overflow-hidden">
         {/* Subtle rings for distance cue */}
         {Array.from({ length: ringCount }).map((_, i) => (
           <div
@@ -79,9 +98,9 @@ export default function PlanetRadarExplorer({ items, initialSelected }: Props) {
           <img
             src="/earth.jpg"
             alt="Earth"
-            width={68}
-            height={68}
-            className="h-16 w-16 rounded-full object-cover shadow-lg ring-1 ring-white/30"
+            width={102}
+            height={102}
+            className="h-24 w-24 rounded-full object-cover shadow-lg ring-1 ring-white/30"
           />
         </div>
 
@@ -112,11 +131,7 @@ export default function PlanetRadarExplorer({ items, initialSelected }: Props) {
       </div>
 
       {/* Radar panel */}
-      <div className="space-y-3">
-        {/* Mini subtitle for the spider view */}
-        <div className="text-left">
-          <p className="text-xs text-slate-400">Spider View · per‑axis difference from Earth (center = closer)</p>
-        </div>
+      <div className="space-y-3 flex-1">
         {selectedItem ? (
           <SpiderRadar
             title={selectedItem.name}
@@ -125,7 +140,7 @@ export default function PlanetRadarExplorer({ items, initialSelected }: Props) {
             centerPlanetColor={hashToColor(selectedItem.name)}
           />
         ) : (
-          <div className="h-[420px] grid place-items-center rounded-xl bg-[#1b2332] ring-1 ring-white/10">
+          <div className="h-[630px] grid place-items-center bg-[#1b2332]">
             <span className="text-slate-400">Select a planet to view details</span>
           </div>
         )}

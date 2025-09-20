@@ -248,7 +248,7 @@ export default function BackgroundPage() {
         {/* Data visualization: Spider (Radar) Graph */}
         <section id="visualizations" className="space-y-6 text-center scroll-mt-24 max-w-4xl mx-auto">
           <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight text-center">Data Visualizations</h2>
-          <div className="max-w-4xl mx-auto rounded-2xl bg-white/5 ring-1 ring-white/10 p-6 space-y-4">
+          <div className="max-w-4xl mx-auto rounded-2xl bg-white/5 p-6 space-y-4">
             {planetItems.length > 0 ? (
               <PlanetRadarExplorer items={planetItems} initialSelected={planetTitle} />
             ) : (

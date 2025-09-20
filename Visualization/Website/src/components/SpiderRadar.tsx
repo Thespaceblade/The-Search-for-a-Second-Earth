@@ -38,10 +38,11 @@ const defaultColor = "#4f46e5"; // indigo-600
 export default function SpiderRadar({ title, data, color = defaultColor, centerPlanetColor }: Props) {
   return (
     <div className="w-full">
-      <div className="text-center mb-3">
-        <h3 className="text-lg sm:text-xl font-semibold">{title}</h3>
-      </div>
-      <div className="relative h-[420px] w-full rounded-xl bg-[#1b2332] ring-1 ring-white/10 p-2">
+      <div className="relative h-[630px] w-full bg-[#1b2332]">
+        {/* Inline title to avoid shifting layout height */}
+        <div className="absolute top-2 right-3 text-sm sm:text-base font-semibold text-slate-200">
+          {title}
+        </div>
         <ResponsiveContainer width="100%" height="100%">
           <RadarChart data={data} outerRadius="70%">
             <PolarGrid stroke="#6b7280" />
