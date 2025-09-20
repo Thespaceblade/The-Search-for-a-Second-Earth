@@ -1,0 +1,23 @@
+{
+  "name": "second-earth-website",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Dataset analysis website for the Search for a Second Earth project.",
+  "scripts": {
+    "clean": "node ./scripts/clean.mjs",
+    "build": "npm run clean && tsc && node ./scripts/copy-static.mjs",
+    "watch": "tsc --watch",
+    "test": "echo \"No automated tests defined yet\""
+  },
+  "keywords": [
+    "typescript",
+    "data-visualization",
+    "second-earth"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "typescript": "^5.4.0"
+  }
+}
