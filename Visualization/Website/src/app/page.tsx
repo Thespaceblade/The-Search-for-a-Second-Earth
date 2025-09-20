@@ -3,7 +3,7 @@ export default function BackgroundPage() {
     <>
       {/* Hero */}
       <header className="text-center space-y-4">
-        <h1 className="text-4xl sm:text-5xl font-semibold tracking-tight">
+        <h1 className="text-5xl sm:text-6xl md:text-7xl font-semibold tracking-tight">
           The Search for the Second Earth
         </h1>
         <div className="prose prose-invert max-w-prose mx-auto text-center">

@@ -26,17 +26,28 @@ main {
   width: 100%;
   padding: 1rem 2.5rem;
   background: rgba(7, 11, 22, 0.76);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   backdrop-filter: blur(8px);
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
+.site-header::after {
+  content: "";
+  display: block;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  margin: 2rem 0; /* matches Tailwind my-8 */
+}
+
 .site-footer {
-  border-bottom: none;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
   font-size: 0.875rem;
+}
+
+.site-footer::before {
+  content: "";
+  display: block;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  margin: 2rem 0; /* matches Tailwind my-8 */
 }
 
 .badge {
