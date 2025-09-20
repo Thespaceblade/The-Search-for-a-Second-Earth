@@ -1,4 +1,5 @@
 import type { Config } from 'tailwindcss'
+import typography from '@tailwindcss/typography';
 
 export default {
   content: [
@@ -6,6 +7,14 @@ export default {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        // Use the Inter variable from next/font with sensible fallbacks
+        sans: ['var(--font-sans)', 'Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        mono: ['ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', 'monospace'],
+      },
+      fontSize: {
+        base: ['1rem', { lineHeight: '1.75' }],
+      },
       colors: {
         night: '#0b1020',
         star: '#f4f6fb',

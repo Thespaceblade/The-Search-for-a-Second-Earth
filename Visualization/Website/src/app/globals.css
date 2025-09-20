@@ -1,55 +1,23 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-/* Tailwind v4 theme tokens */
 @theme {
   --color-night: #0b1020;
-  --color-star: #f4f6fb;
-  --color-accent: #7cc4ff;
+  --color-star: #e6edf6;
 }
 
-/* Global base styles */
-:root { color-scheme: dark; }
-html, body {
-  background-color: var(--color-night);
-  color: var(--color-star);
+:root {
+  color-scheme: dark;
+}
+
+html,
+body {
   margin: 0;
   padding: 0;
+  min-height: 100%;
+  background: radial-gradient(circle at 20% 20%, rgba(124, 196, 255, 0.12), transparent 55%),
+    radial-gradient(circle at 80% 10%, rgba(255, 255, 255, 0.08), transparent 60%),
+    radial-gradient(circle at 50% 70%, rgba(124, 196, 255, 0.12), transparent 60%),
+    var(--color-night);
+  color: var(--color-star);
 }
-
-/* Subtle starfield overlay */
-.starfield {
-  background-image:
-    radial-gradient(circle at 20% 10%, rgba(124,196,255,0.12) 0, rgba(124,196,255,0) 40%),
-    radial-gradient(circle at 80% 70%, rgba(255,255,255,0.08) 0, rgba(255,255,255,0) 45%),
-    radial-gradient(circle at 50% 50%, rgba(255,255,255,0.05) 0, rgba(255,255,255,0) 55%);
-  position: relative;
-}
-.starfield::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  background-image: radial-gradient(1px 1px at 10% 20%, rgba(255,255,255,0.35) 0, rgba(255,255,255,0) 100%),
-                    radial-gradient(1px 1px at 30% 80%, rgba(255,255,255,0.25) 0, rgba(255,255,255,0) 100%),
-                    radial-gradient(1px 1px at 70% 40%, rgba(255,255,255,0.25) 0, rgba(255,255,255,0) 100%);
-  animation: twinkle 6s ease-in-out infinite alternate;
-}
-
-@keyframes twinkle {
-  from { opacity: 0.65; }
-  to   { opacity: 0.95; }
-}
-
-.glass {
-  background: rgba(255,255,255,0.06);
-  backdrop-filter: blur(6px);
-}
-
-.card {
-  background: rgba(255,255,255,0.05);
-  border: 1px solid rgba(255,255,255,0.08);
-}
-.card-hover { transition: transform 220ms ease, background 220ms ease; }
-.card-hover:hover { transform: translateY(-2px) scale(1.01); background: rgba(255,255,255,0.07); }
