@@ -2,6 +2,9 @@ import path from "node:path";
 import fs from "node:fs";
 import SpiderRadar, { RadarDatum } from "../components/SpiderRadar";
 import PlanetRadarExplorer from "../components/PlanetRadarExplorer";
+import type { DensityBinDatum } from "../components/DensityHistogramChart";
+// Note: Plotly implementation below is used for rendering
+import DensityHistogramPlotly from "../components/DensityHistogramPlotly";
 
 type Row = Record<string, string>;
 
@@ -184,6 +187,8 @@ export default function BackgroundPage() {
   let planetTitle = "GJ 1132 b";
   let planetItems: PlanetItem[] = [];
   let errorReason: string | null = null;
+  let densityBins: DensityBinDatum[] = [];
+  let densitySeries: { terrestrial: number[]; gaseous: number[] } = { terrestrial: [], gaseous: [] };
   try {
     if (!datasetPath) {
       errorReason = "CSV not found (public/data/rawdata.csv)";
@@ -193,6 +198,10 @@ export default function BackgroundPage() {
       const data = getRadarDataForPlanet(records, planetTitle);
       if (!data) errorReason = "Planet not found or incomplete data";
       else radarData = data;
+
+      // Compute density histogram bins
+      densityBins = computeDensityBins(records, 30);
+      densitySeries = computeDensitySeries(records);
     }
   } catch (e) {
     errorReason = "Error reading CSV";
@@ -270,7 +279,110 @@ export default function BackgroundPage() {
             </div>
           </div>
         </section>
+
+        {/* Density Distribution */}
+        <section id="density" className="space-y-6 text-center scroll-mt-24 max-w-4xl mx-auto">
+          <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight text-center">Planet Density Distribution</h2>
+          <div className="max-w-4xl mx-auto rounded-2xl bg-white/5 p-6 space-y-4">
+            {densitySeries.terrestrial.length + densitySeries.gaseous.length > 0 ? (
+              <DensityHistogramPlotly terrestrial={densitySeries.terrestrial} gaseous={densitySeries.gaseous} />
+            ) : (
+              <div className="aspect-[16/9] grid place-items-center rounded-xl bg-white/5">
+                <span className="text-slate-400">Density histogram unavailable ({errorReason ?? "unknown reason"}).</span>
+              </div>
+            )}
+            <div className="prose prose-invert max-w-prose mx-auto">
+              <p className="text-sm text-slate-400">
+                Densities are computed from reported mass and radius. We classify planets with density ≥ 3 g/cm³ as
+                terrestrial and below as gaseous. Bars overlay to show distribution per class.
+              </p>
+            </div>
+          </div>
+        </section>
       </div>
     </main>
   );
+}
+
+// ------------------------- Density helpers (server) -------------------------
+
+function computeDensityBins(records: Row[], nbins = 30): DensityBinDatum[] {
+  const EARTH_MASS_KG = 5.972e24;
+  const EARTH_RADIUS_M = 6.371e6;
+  type RowD = { d: number; type: "Terrestrial" | "Gaseous" };
+  const values: RowD[] = [];
+  for (const r of records) {
+    const mStr = (r["pl_bmasse"] || "").trim();
+    const radStr = (r["pl_rade"] || "").trim();
+    if (!mStr || !radStr) continue;
+    const m = Number.parseFloat(mStr);
+    const rad = Number.parseFloat(radStr);
+    if (!Number.isFinite(m) || !Number.isFinite(rad) || rad <= 0) continue;
+    const densityKgM3 = (m * EARTH_MASS_KG) / ((4 / 3) * Math.PI * Math.pow(rad * EARTH_RADIUS_M, 3));
+    const d = densityKgM3 / 1000; // g/cm^3
+    const type = d >= 3 ? "Terrestrial" : "Gaseous";
+    if (Number.isFinite(d)) values.push({ d, type });
+  }
+  if (values.length === 0) return [];
+
+  // Determine bin edges
+  let min = Infinity;
+  let max = -Infinity;
+  for (const v of values) {
+    if (v.d < min) min = v.d;
+    if (v.d > max) max = v.d;
+  }
+  // Clamp extremes to reasonable range
+  min = Math.max(0, isFinite(min) ? min : 0);
+  max = Math.min(20, isFinite(max) ? max : 20);
+  if (!(max > min)) {
+    max = min + 1;
+  }
+
+  const step = (max - min) / nbins;
+  const bins: DensityBinDatum[] = [];
+  for (let i = 0; i < nbins; i++) {
+    const start = min + i * step;
+    const end = i === nbins - 1 ? max : start + step;
+    bins.push({ binLabel: ((start + end) / 2).toFixed(2), binStart: start, binEnd: end, terrestrial: 0, gaseous: 0 });
+  }
+
+  for (const v of values) {
+    let idx = Math.floor((v.d - min) / step);
+    if (idx < 0) idx = 0;
+    if (idx >= nbins) idx = nbins - 1;
+    if (v.type === "Terrestrial") bins[idx].terrestrial += 1;
+    else bins[idx].gaseous += 1;
+  }
+
+  // Add readable labels like "a–b"
+  for (let i = 0; i < bins.length; i++) {
+    const b = bins[i];
+    b.binLabel = `${b.binStart.toFixed(1)}–${b.binEnd.toFixed(1)}`;
+  }
+  return bins;
+}
+
+function computeDensitySeries(records: Row[]): { terrestrial: number[]; gaseous: number[] } {
+  const EARTH_MASS_KG = 5.972e24;
+  const EARTH_RADIUS_M = 6.371e6;
+  const terrestrial: number[] = [];
+  const gaseous: number[] = [];
+  for (const r of records) {
+    const mStr = (r["pl_bmasse"] || "").trim();
+    const radStr = (r["pl_rade"] || "").trim();
+    if (!mStr || !radStr) continue;
+    const m = Number.parseFloat(mStr);
+    const rad = Number.parseFloat(radStr);
+    if (!Number.isFinite(m) || !Number.isFinite(rad) || rad <= 0) continue;
+    const densityKgM3 = (m * EARTH_MASS_KG) / ((4 / 3) * Math.PI * Math.pow(rad * EARTH_RADIUS_M, 3));
+    let d = densityKgM3 / 1000; // g/cm^3
+    if (!Number.isFinite(d)) continue;
+    // Clamp to a reasonable plotting range to avoid crazy outliers affecting auto-binning
+    if (d < 0) d = 0;
+    if (d > 20) d = 20;
+    if (d >= 3) terrestrial.push(d);
+    else gaseous.push(d);
+  }
+  return { terrestrial, gaseous };
 }

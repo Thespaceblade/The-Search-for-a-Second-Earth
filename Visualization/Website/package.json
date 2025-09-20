@@ -25,8 +25,10 @@
     "framer-motion": "^12.23.16",
     "next": "^14.2.11",
     "postcss": "^8.5.6",
+    "plotly.js": "^2.35.2",
     "recharts": "^2.12.7",
     "react": "^18.3.1",
+    "react-plotly.js": "^2.6.0",
     "react-dom": "^18.3.1",
     "tailwindcss": "^4.1.13"
   },
