@@ -9,5 +9,8 @@
     "build": "npm run build --workspace second-earth-website",
     "preview": "npm run start --workspace second-earth-website",
     "typecheck": "npm run typecheck --workspace second-earth-website"
+  },
+  "dependencies": {
+    "@tailwindcss/typography": "^0.5.18"
   }
 }
