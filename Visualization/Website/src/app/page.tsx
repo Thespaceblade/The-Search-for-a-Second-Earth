@@ -223,10 +223,20 @@ export default function BackgroundPage() {
     <main className="min-h-screen bg-[#0b1220]">
       <div className="mx-auto w-full max-w-5xl px-4 sm:px-6 lg:px-10 xl:max-w-[66vw] py-12 space-y-12">
 
+        {/* Big single-row title */}
+        <section id="hero-title" className="text-center scroll-mt-24 mt-16">
+          <h1
+            className="mx-auto max-w-[95vw] whitespace-nowrap text-[clamp(1rem,4.5vw,4.5rem)] font-extrabold leading-none tracking-tight"
+            style={{ letterSpacing: "-0.02em" }}
+          >
+            The Search for a Second Earth
+          </h1>
+        </section>
+
     
 
         {/* Data visualization: Spider (Radar) Graph */}
-        <section id="visualizations" className="space-y-6 text-center scroll-mt-24 max-w-4xl mx-auto">
+  <section id="visualizations" className="space-y-6 text-center scroll-mt-24 max-w-4xl mx-auto pt-10">
           <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight text-center">Data Visualizations</h2>
           <div className="max-w-4xl mx-auto rounded-2xl bg-white/5 p-6 space-y-4">
             {planetItems.length > 0 ? (
@@ -252,8 +262,10 @@ export default function BackgroundPage() {
         </section>
 
         {/* Density Distribution */}
-        <section id="density" className="space-y-6 text-center scroll-mt-24 max-w-4xl mx-auto">
-          <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight text-center">Planet Density Distribution</h2>
+        <section id="density" className="space-y-6 text-center scroll-mt-24 max-w-4xl mx-auto pt-24 sm:pt-28 lg:pt-40">
+          <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight text-center mt-8">
+            Planet Density Distribution
+          </h2>
           <div className="max-w-4xl mx-auto rounded-2xl bg-white/5 p-6 space-y-4">
             {densitySeries.terrestrial.length + densitySeries.gaseous.length > 0 ? (
               <DensityHistogramPlotly terrestrial={densitySeries.terrestrial} gaseous={densitySeries.gaseous} />
@@ -272,8 +284,10 @@ export default function BackgroundPage() {
         </section>
 
         {/* Featured Planets Row */}
-        <section id="featured" className="space-y-6 text-center scroll-mt-24 max-w-5xl mx-auto">
-          <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight text-center">Habitable Planet</h2>
+        <section id="featured" className="space-y-6 text-center scroll-mt-24 max-w-5xl mx-auto pt-24 sm:pt-28 lg:pt-40">
+          <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight text-center mt-8">
+            Potential Habitable Planets
+          </h2>
           <div className="max-w-5xl mx-auto rounded-2xl bg-white/5 p-4">
             {featuredProfiles.length > 0 ? (
               <FeaturedPlanetsRow profiles={featuredProfiles as any} />
