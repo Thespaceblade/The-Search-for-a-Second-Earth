@@ -2,6 +2,9 @@ import path from "node:path";
 import fs from "node:fs";
 import SpiderRadar, { RadarDatum } from "../components/SpiderRadar";
 import PlanetRadarExplorer from "../components/PlanetRadarExplorer";
+import FeaturedPlanetsRow from "../components/FeaturedPlanetsRow";
+import { readCSVRecords as readSelected, resolveSelectedCSV } from "../lib/csv";
+import { consolidateProfiles, ALLOWED_PLANETS } from "../lib/planets";
 import type { DensityBinDatum } from "../components/DensityHistogramChart";
 // Note: Plotly implementation below is used for rendering
 import DensityHistogramPlotly from "../components/DensityHistogramPlotly";
@@ -189,6 +192,7 @@ export default function BackgroundPage() {
   let errorReason: string | null = null;
   let densityBins: DensityBinDatum[] = [];
   let densitySeries: { terrestrial: number[]; gaseous: number[] } = { terrestrial: [], gaseous: [] };
+  let featuredProfiles: any[] = [];
   try {
     if (!datasetPath) {
       errorReason = "CSV not found (public/data/rawdata.csv)";
@@ -203,6 +207,13 @@ export default function BackgroundPage() {
       densityBins = computeDensityBins(records, 30);
       densitySeries = computeDensitySeries(records);
     }
+
+    // Load curated featured planets if present
+    const selPath = resolveSelectedCSV();
+    if (selPath) {
+      const selRows = readSelected(selPath);
+      featuredProfiles = consolidateProfiles(selRows).filter((p) => ALLOWED_PLANETS.has(p.pl_name));
+    }
   } catch (e) {
     errorReason = "Error reading CSV";
     radarData = null;
@@ -211,48 +222,8 @@ export default function BackgroundPage() {
   return (
     <main className="min-h-screen bg-[#0b1220]">
       <div className="mx-auto w-full max-w-5xl px-4 sm:px-6 lg:px-10 xl:max-w-[66vw] py-12 space-y-12">
-        {/* Hero */}
-        <header id="mission" className="space-y-6 text-center scroll-mt-24 max-w-3xl mx-auto">
-          <h1 className="text-4xl sm:text-6xl font-bold tracking-tight text-center">
-            The Search for the Second Earth
-          </h1>
-          <div className="prose prose-invert max-w-prose mx-auto">
-            <p className="leading-7">
-              Humanity’s growth is outpacing what Earth alone can sustainably provide. We’re exploring bold,
-              data-driven pathways to safeguard our future among the stars.
-            </p>
-          </div>
-        </header>
 
-        {/* Key pressures (cards) */}
-        <section id="pressures" className="space-y-6 text-center scroll-mt-24">
-          <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight text-center">A summary</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
-            <article className="rounded-2xl bg-white/5 ring-1 ring-white/10 p-6 space-y-3">
-              <h3 className="text-lg sm:text-xl font-semibold">Why this matters</h3>
-              <p className="text-slate-300 max-w-prose mx-auto">
-                The UN projects a peak near 10.3B in the 2080s, magnifying stress on essential systems. Food,
-                water, and energy demands keep rising while forests and freshwater reserves decline. Even
-                renewables are being stretched—underscoring the need for long-term solutions beyond Earth. Its
-                important to secure a future for humanity on another habitable world, and we can start to look
-                for other habitable worlds now.
-              </p>
-            </article>
-            <article className="rounded-2xl bg-white/5 ring-1 ring-white/10 p-6 space-y-3">
-              <h3 className="text-lg sm:text-xl font-semibold">What makes a good world?</h3>
-              <p className="text-slate-300 max-w-prose mx-auto">
-                A good planet for life needs the right size and gravity to hold an atmosphere, a stable climate
-                in the star’s habitable zone for liquid water, and protection from radiation through a magnetic
-                field. It should have a breathable atmosphere, moderate seasons, and geologic activity to
-                recycle nutrients and keep conditions stable. Together
-              </p>
-            </article>
-            <article className="rounded-2xl bg-white/5 ring-1 ring-white/10 p-6 space-y-3">
-              <h3 className="text-lg sm:text-xl font-semibold">Sustainability Gap</h3>
-              <p className="text-slate-300 max-w-prose mx-auto">&nbsp;</p>
-            </article>
-          </div>
-        </section>
+    
 
         {/* Data visualization: Spider (Radar) Graph */}
         <section id="visualizations" className="space-y-6 text-center scroll-mt-24 max-w-4xl mx-auto">
@@ -297,6 +268,20 @@ export default function BackgroundPage() {
                 terrestrial and below as gaseous. Bars overlay to show distribution per class.
               </p>
             </div>
+          </div>
+        </section>
+
+        {/* Featured Planets Row */}
+        <section id="featured" className="space-y-6 text-center scroll-mt-24 max-w-5xl mx-auto">
+          <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight text-center">Habitable Planet</h2>
+          <div className="max-w-5xl mx-auto rounded-2xl bg-white/5 p-4">
+            {featuredProfiles.length > 0 ? (
+              <FeaturedPlanetsRow profiles={featuredProfiles as any} />
+            ) : (
+              <div className="grid place-items-center py-10 text-slate-400">
+                Add the curated CSV at <code className="text-slate-200">/public/data/selected_planets_full.csv</code> to show featured planets.
+              </div>
+            )}
           </div>
         </section>
       </div>
