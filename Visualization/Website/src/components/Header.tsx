@@ -7,7 +7,7 @@ export default function Header() {
   const pathname = usePathname() || "/";
   const items = [
     { href: "/", label: "Data Visualizations" },
-    { href: "/our-story", label: "Our Story" },
+    { href: "/our-methods", label: "Our Methods" },
   ];
 
   return (
