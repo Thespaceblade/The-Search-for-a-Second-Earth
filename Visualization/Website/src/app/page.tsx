@@ -3,6 +3,7 @@ import fs from "node:fs";
 import SpiderRadar, { RadarDatum } from "../components/SpiderRadar";
 import PlanetRadarExplorer from "../components/PlanetRadarExplorer";
 import FeaturedPlanetsRow from "../components/FeaturedPlanetsRow";
+import Header from "../components/Header";
 import { readCSVRecords as readSelected, resolveSelectedCSV } from "../lib/csv";
 import { consolidateProfiles, ALLOWED_PLANETS } from "../lib/planets";
 import type { DensityBinDatum } from "../components/DensityHistogramChart";
@@ -221,22 +222,11 @@ export default function BackgroundPage() {
 
   return (
     <main className="min-h-screen bg-[#0b1220]">
-      <div className="mx-auto w-full max-w-5xl px-4 sm:px-6 lg:px-10 xl:max-w-[66vw] py-12 space-y-12">
-
-        {/* Big single-row title */}
-        <section id="hero-title" className="text-center scroll-mt-24 mt-16">
-          <h1
-            className="mx-auto max-w-[95vw] whitespace-nowrap text-[clamp(1rem,4.5vw,4.5rem)] font-extrabold leading-none tracking-tight"
-            style={{ letterSpacing: "-0.02em" }}
-          >
-            The Search for a Second Earth
-          </h1>
-        </section>
-
-    
+      <div className="mx-auto w-full max-w-5xl px-4 sm:px-6 lg:px-10 xl:max-w-[66vw] pt-0 space-y-12">
+        <Header />
 
         {/* Data visualization: Spider (Radar) Graph */}
-  <section id="visualizations" className="space-y-6 text-center scroll-mt-24 max-w-4xl mx-auto pt-10">
+  <section id="visualizations" className="space-y-6 text-center scroll-mt-24 max-w-4xl mx-auto pt-20 sm:pt-24 md:pt-28">
           <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight text-center">Data Visualizations</h2>
           <div className="max-w-4xl mx-auto rounded-2xl bg-white/5 p-6 space-y-4">
             {planetItems.length > 0 ? (

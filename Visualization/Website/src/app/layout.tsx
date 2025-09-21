@@ -13,9 +13,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en">
       <body className={`min-h-screen bg-[#0b1020] text-slate-100 antialiased ${inter.variable} ${inter.className}`}>
         <div className="flex min-h-screen flex-col">
-        
 
-          <main id="main" className="flex-1 max-w-3xl mx-auto px-6 py-12 space-y-12">
+          {/* Main content container: full width, no top padding to remove any top gap */}
+          <main id="main" className="flex-1 w-full mx-auto px-0 pt-0 pb-8">
             {children}
           </main>
 
